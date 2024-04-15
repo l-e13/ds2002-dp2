@@ -10,9 +10,9 @@ db = client.jww2fj
 collection = db.dp2
 
 # Counters for tracking doc status
-num_imported_documents = 0
+complete_imports = 0
 num_corrupted_documents = 0
-num_incomplete_documents = 0
+failed_imports = 0
 
 # looping through files and inserting into DB
 for (root, dirs, files) in os.walk("data/"):
@@ -24,19 +24,19 @@ for (root, dirs, files) in os.walk("data/"):
                     data = json.load(file)
                     if isinstance(data, list):
                         collection.insert_many(data)
-                        num_imported_documents += len(data)
+                        complete_imports += len(data)
                     else:
                         collection.insert_one(data)
-                        num_imported_documents += 1
+                        complete_imports += 1
             except Exception as e:
                 num_corrupted_documents += 1
-                num_incomplete_documents += 1
+                failed_imports += 1
 
 # count the number of imported documents
-print(f"Number of imported documents: {num_imported_documents}")
+print(f"Number of complete imports: {complete_imports}")
 
 # count the number of corrupted documents
 print(f"Number of corrupted documents: {num_corrupted_documents}")
 
 # count the number of incomplete documents (not imported)
-print(f"Number of incomplete documents: {num_incomplete_documents}")
+print(f"Number of failed imports: {failed_imports}")
