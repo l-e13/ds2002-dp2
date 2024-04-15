@@ -28,9 +28,17 @@ for (root, dirs, files) in os.walk("data/"):
                     else:
                         collection.insert_one(data)
                         complete_imports += 1
-            except Exception as e:
+            except json.JSONDecodeError as e:
                 num_corrupted_documents += 1
-                failed_imports += 1
+            except Exception as e:
+                if isinstance(files, list):
+                    failed_imports += len(files)
+                else:
+                    failed_imports += 1
+
+            #except Exception as e:
+              # num_corrupted_documents += 1
+              #  failed_imports += 1
 
 # count the number of imported documents
 print(f"Number of complete imports: {complete_imports}")
